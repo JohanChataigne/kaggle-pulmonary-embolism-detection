@@ -25,7 +25,7 @@ class OneChannelImageDataset(Dataset):
         self.transform = transform
         
     def __len__(self):
-        """Length is nb_captions / captions_per_image"""
+        """Length is nb of samples"""
         return len(self.annotations)
         
     def __getitem__(self, index):
