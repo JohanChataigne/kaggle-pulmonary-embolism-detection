@@ -24,27 +24,28 @@ def balance_dataframe(df, target):
     return df.drop(to_remove)
     
 def train_test_split(dataset, ratio, batch_size):
-	'''
-	Splits a dataset into train and test sets with size depending on ratio.
-	'''
+    '''
+    Splits a dataset into train and test sets with size depending on ratio.
+    '''
+
     assert ratio >= 0
     assert ratio <= 1
-    
-	sizeDS = len(dataset)
-	indices = list(range(sizeDS))
-	np.random.shuffle(indices)
-	train_size = (1-ratio)*sizeDS
-	test_size = sizeDS - train_size
-	
-	train_indices, test_indices = indices[train_size:], indices[:test_size]
 
-	train_sampler = SubsetRandomSampler(d_train_indices)
-	test_sampler = SubsetRandomSampler(d_test_indices)
+    sizeDS = len(dataset)
+    indices = list(range(sizeDS))
+    np.random.shuffle(indices)
+    train_size = int((1-ratio) * sizeDS)
+    test_size = sizeDS - train_size
 
-	train_loader = DataLoader(dataset, batch_size=batch_size, sampler=train_sampler)
-	test_loader = DataLoader(dataset, sampler=test_sampler)
-	
-	return train_loader, test_loader
+    train_indices, test_indices = indices[train_size:], indices[:test_size]
+
+    train_sampler = SubsetRandomSampler(train_indices)
+    test_sampler = SubsetRandomSampler(test_indices)
+
+    train_loader = DataLoader(dataset, batch_size=batch_size, sampler=train_sampler)
+    test_loader = DataLoader(dataset, sampler=test_sampler)
+
+    return train_loader, test_loader
 
     
 def balance_train_test_split(dataset, ratio, batch_size):

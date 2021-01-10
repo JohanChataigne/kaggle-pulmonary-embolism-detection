@@ -16,8 +16,6 @@ class FullImageDataset(Dataset):
                 on a sample.
         """
         
-        assert(channel in (0,1,2))
-        
         self.annotations = annotations
         self.root_dir = root_dir
         self.extension = extension

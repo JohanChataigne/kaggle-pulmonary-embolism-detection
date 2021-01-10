@@ -6,9 +6,13 @@ class ToTensor(object):
 
     def __call__(self, sample):
         image, target = sample['image'], sample['target']
-
+        
         # Need to have 3 dimensions to go through a convnet
-        image = torch.from_numpy(image).view(1, image.shape[0], image.shape[1])
+        if len(image.shape) < 3:
+            image = torch.from_numpy(image).view(1, image.shape[0], image.shape[1])
+        else:
+            image = torch.from_numpy(image).view(image.shape[2], image.shape[0], image.shape[1])  
+        
         return {'image': image,
                 'target': target}
     
