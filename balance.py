@@ -43,7 +43,7 @@ def train_test_split(dataset, ratio, batch_size):
     test_sampler = SubsetRandomSampler(test_indices)
 
     train_loader = DataLoader(dataset, batch_size=batch_size, sampler=train_sampler)
-    test_loader = DataLoader(dataset, sampler=test_sampler)
+    test_loader = DataLoader(dataset, batch_size=batch_size, sampler=test_sampler)
 
     return train_loader, test_loader
 
