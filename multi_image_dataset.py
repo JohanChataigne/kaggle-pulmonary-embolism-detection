@@ -54,9 +54,16 @@ class MultiImageDataset(Dataset):
 
         final_images = final_p_images + final_n_images
         final_target = list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['negative_exam_for_pe'])[0]
-    
-        final_images = np.asarray(list(map(lambda x: io.imread(x), final_images)))
-        final_images = final_images.reshape(512, 512, -1)
+
+        del study
+        del images
+        del p_images
+        del n_images
+        del ratio
+        del nb_n_images
+        del nb_p_images
+        del final_p_images
+        del final_n_images
         
         return {'image': final_images, 'target': final_target}
         
@@ -70,6 +77,9 @@ class MultiImageDataset(Dataset):
             index = index.tolist()
             
         sample = self.samples[index]
+
+        sample['image'] = np.asarray(list(map(lambda x: io.imread(x), sample['image'])))
+        sample['image'] = sample['image'].reshape(512, 512, -1)
 
         if self.transform:
             sample = self.transform(sample)
