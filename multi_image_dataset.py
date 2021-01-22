@@ -34,13 +34,16 @@ class MultiImageDataset(Dataset):
         serie = self.series[index]
         images = self.annotations.loc[self.annotations['SeriesInstanceUID'] == serie][['SOPInstanceUID','pe_present_on_image']]
 
+        # Separate positive and negative samples */
         p_images = list(images.loc[images['pe_present_on_image'] == 1]['SOPInstanceUID'])
         n_images = list(images.loc[images['pe_present_on_image'] == 0]['SOPInstanceUID'])
 
+        # Compute ratio of positives
         ratio = len(p_images)/len(images)
 
-        nb_p_images = int(50 * ratio)
-        nb_n_images = 50 - nb_p_images
+        # Keep the same ratio while picking nb_images samples
+        nb_p_images = int(self.nb_images * ratio)
+        nb_n_images = self.nb_images - nb_p_images
 
         final_p_images = p_images[:nb_p_images]
         final_n_images = n_images[:nb_n_images]
