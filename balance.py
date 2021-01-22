@@ -13,9 +13,14 @@ def balance_dataframe(df, target):
     '''
 
     # Get the least and most represented label
-    counts = list(df[target].value_counts())
-    min_val, min_elements = min(enumerate(counts), key=lambda x:x[1])
-    max_val, max_elements = max(enumerate(counts), key=lambda x:x[1])
+    counts = dict(df[target].value_counts())
+    
+    min_val = min(counts, key=counts.get)
+    min_elements = counts[min_val]
+    
+    max_val = max(counts, key=counts.get)
+    max_elements = counts[max_val]
+    
 
     # Keep the same amount of rows for both labels
     num_remove = max_elements - min_elements

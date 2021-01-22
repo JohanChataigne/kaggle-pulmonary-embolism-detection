@@ -21,18 +21,19 @@ class MultiImageDataset(Dataset):
         self.extension = extension
         self.transform = transform
         self.nb_images = nb_images
-        self.series = dict(enumerate(dict(self.annotations['SeriesInstanceUID'].value_counts()).keys()))
+        self.studies = dict(enumerate(dict(self.annotations['StudyInstanceUID'].value_counts()).keys()))
+    
+        self.samples = dict()
         
-    def __len__(self):
-        """Length is nb of samples"""
-        return len(self.series)
-        
-    def __getitem__(self, index):
-        if torch.is_tensor(index):
-            index = index.tolist()
+        for key in self.studies.keys():
             
-        serie = self.series[index]
-        images = self.annotations.loc[self.annotations['SeriesInstanceUID'] == serie][['SOPInstanceUID','pe_present_on_image']]
+            self.samples[key] = self.init_sample(key)
+        
+        
+    def init_sample(self, index):
+        
+        study = self.studies[index]
+        images = self.annotations.loc[self.annotations['StudyInstanceUID'] == study][['SOPInstanceUID','pe_present_on_image']]
 
         # Separate positive and negative samples */
         p_images = list(images.loc[images['pe_present_on_image'] == 1]['SOPInstanceUID'])
@@ -52,12 +53,23 @@ class MultiImageDataset(Dataset):
         final_n_images = list(map(lambda x: self.root_dir+'/'+x+'.jpg', final_n_images))
 
         final_images = final_p_images + final_n_images
-        final_target = list(self.annotations.loc[self.annotations['SeriesInstanceUID']==serie]['negative_exam_for_pe'])[0]
+        final_target = list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['negative_exam_for_pe'])[0]
     
-        final_images = np.asarray(list(map(lambda x: io.imread(x).reshape(3, 512, 512), final_images)))
-        final_images = final_images.reshape(-1, 512, 512)
+        final_images = np.asarray(list(map(lambda x: io.imread(x), final_images)))
+        final_images = final_images.reshape(512, 512, -1)
         
-        sample = {'image': final_images, 'target': final_target}
+        return {'image': final_images, 'target': final_target}
+        
+        
+    def __len__(self):
+        """Length is nb of samples"""
+        return len(self.studies)
+        
+    def __getitem__(self, index):
+        if torch.is_tensor(index):
+            index = index.tolist()
+            
+        sample = self.samples[index]
 
         if self.transform:
             sample = self.transform(sample)
