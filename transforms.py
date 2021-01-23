@@ -4,6 +4,10 @@ from skimage import transform
 class ToTensor(object):
     """Convert ndarrays in a sample to Tensors."""
 
+    def __init__(self, transform_target=False):
+        
+        self.transform_target = transform_target
+        
     def __call__(self, sample):
         image, target = sample['image'], sample['target']
         
@@ -13,6 +17,9 @@ class ToTensor(object):
         else:
             image = torch.from_numpy(image).view(image.shape[2], image.shape[0], image.shape[1])  
         
+        if self.transform_target:
+            target = [torch.FloatTensor(e) for e in target]
+            
         return {'image': image,
                 'target': target}
     
@@ -57,3 +64,19 @@ class Rescale(object):
         img = transform.resize(image, (new_h, new_w))
 
         return {'image': img, 'target': sample['target']}
+    
+    
+class ToCategorical(object):
+    """Categorize classification labels"""
+    
+    def __call__(self, sample):
+        
+        ratios = sample['target'][0]
+        types = sample['target'][2]
+        
+        _, ratios = torch.max(ratios, 0)
+        _, types = torch.max(types, 0)
+        
+        return {'image': sample['image'], 'ratios': ratios, 'locations': sample['target'][1], 'types': types}
+    
+    
