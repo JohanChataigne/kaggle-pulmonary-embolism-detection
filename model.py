@@ -68,7 +68,7 @@ def evaluate(model, data_loader, device):
             correct += (pred == targets).sum().item()
             
             
-    return 100 * correct / total
+    return 100 * correct / total, total
 
     
     
