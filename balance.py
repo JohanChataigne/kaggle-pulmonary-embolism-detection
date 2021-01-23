@@ -37,12 +37,13 @@ def train_test_split(dataset, ratio, batch_size):
     assert ratio <= 1
 
     sizeDS = len(dataset)
+    
     indices = list(range(sizeDS))
     np.random.shuffle(indices)
     train_size = int((1-ratio) * sizeDS)
     test_size = sizeDS - train_size
 
-    train_indices, test_indices = indices[train_size:], indices[:test_size]
+    train_indices, test_indices = indices[:train_size], indices[train_size:]
 
     train_sampler = SubsetRandomSampler(train_indices)
     test_sampler = SubsetRandomSampler(test_indices)
