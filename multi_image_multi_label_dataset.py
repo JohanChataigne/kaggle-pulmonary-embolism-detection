@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 # Dataset storing images in grey level, corresponding to one channel of the original datas
-class MultiImageDataset(Dataset):
+class MultiImageMultiLabelDataset(Dataset):
     
     def __init__(self, annotations, root_dir, extension='.jpg', nb_images=50, transform=None):
         """
