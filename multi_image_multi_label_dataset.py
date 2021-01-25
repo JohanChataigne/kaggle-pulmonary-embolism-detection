@@ -4,6 +4,7 @@ from skimage import io
 import os
 import pandas as pd
 import numpy as np
+import random
 
 # Dataset storing images in grey level, corresponding to one channel of the original datas
 class MultiImageMultiLabelDataset(Dataset):
@@ -46,8 +47,8 @@ class MultiImageMultiLabelDataset(Dataset):
         nb_p_images = int(self.nb_images * ratio)
         nb_n_images = self.nb_images - nb_p_images
 
-        final_p_images = p_images[:nb_p_images]
-        final_n_images = n_images[:nb_n_images]
+        final_p_images = random.sample(p_images, nb_p_images)
+        final_n_images = random.sample(n_images, nb_n_images)
         
         final_p_images = list(map(lambda x: self.root_dir + x + self.extension, final_p_images))
         final_n_images = list(map(lambda x: self.root_dir + x + self.extension, final_n_images))
