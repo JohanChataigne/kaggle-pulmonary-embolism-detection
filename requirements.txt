@@ -1,0 +1,11 @@
+kaggle==1.5.10
+matplotlib==3.2.1
+numpy==1.18.1
+pandas==1.0.0
+pydicom==2.1.2
+scikit-image==0.16.2
+seaborn==0.10.1
+torch==1.7.1
+torchsummary==1.5.1
+torchvision==0.6.1+cu101
+
