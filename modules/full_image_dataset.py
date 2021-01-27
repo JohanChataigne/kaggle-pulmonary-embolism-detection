@@ -4,7 +4,7 @@ from skimage import io
 import os
 import pandas as pd
 
-# Dataset storing images in grey level, corresponding to one channel of the original datas
+# Dataset storing 3 channel images
 class FullImageDataset(Dataset):
     
     def __init__(self, annotations, root_dir, extension='.jpg', transform=None):

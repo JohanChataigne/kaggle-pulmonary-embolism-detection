@@ -5,7 +5,6 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from torch.utils.data import DataLoader
 
 
-
 def balance_dataframe(df, target):
     '''
     Creates the biggest possible dataframe from the given one and the target feature.
@@ -27,7 +26,8 @@ def balance_dataframe(df, target):
     to_remove = np.random.choice(df[df[target] == max_val].index, size=num_remove, replace=False)
 
     return df.drop(to_remove)
-    
+
+
 def train_test_split(dataset, ratio, batch_size):
     '''
     Splits a dataset into train and test sets with size depending on ratio.
@@ -54,6 +54,8 @@ def train_test_split(dataset, ratio, batch_size):
     return train_loader, test_loader
 
     
+
+# Deprecated/not used, really slow for low utility
 def balance_train_test_split(dataset, ratio, batch_size):
     '''
     Splits a balanced dataset into train and test sets with size depending on ratio.

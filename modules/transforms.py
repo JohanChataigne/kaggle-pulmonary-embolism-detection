@@ -65,9 +65,9 @@ class Rescale(object):
 
         return {'image': img, 'target': sample['target']}
     
-    
+
 class ToCategorical(object):
-    """Categorize classification labels"""
+    """Categorize classification labels, used for last approach models"""
     
     def __call__(self, sample):
         

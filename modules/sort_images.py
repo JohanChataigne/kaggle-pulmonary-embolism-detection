@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 
+# Really slow porcess sorting images in folders by series and studies UID
+
 images_dir = './images/'
 dest_dir = './sorted_datas/'
 

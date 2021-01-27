@@ -4,15 +4,17 @@ from skimage import io
 import os
 import pandas as pd
 import numpy as np
+import random
 
-# Dataset storing images in grey level, corresponding to one channel of the original datas
-class MultiImageDataset(Dataset):
+# Dataset storing nb_images per study and study level labels for ill patients.
+class MultiImageMultiLabelDataset(Dataset):
     
     def __init__(self, annotations, root_dir, extension='.jpg', nb_images=50, transform=None):
         """
         Args:
             annotations(dataframe): annotations for the dataset's images
             root_dir(string): images directory
+            nb_images(int): number of images to keep for a patient
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
@@ -46,15 +48,27 @@ class MultiImageDataset(Dataset):
         nb_p_images = int(self.nb_images * ratio)
         nb_n_images = self.nb_images - nb_p_images
 
-        final_p_images = p_images[:nb_p_images]
-        final_n_images = n_images[:nb_n_images]
+        final_p_images = random.sample(p_images, nb_p_images)
+        final_n_images = random.sample(n_images, nb_n_images)
         
         final_p_images = list(map(lambda x: self.root_dir + x + self.extension, final_p_images))
         final_n_images = list(map(lambda x: self.root_dir + x + self.extension, final_n_images))
         
         final_images = final_p_images + final_n_images
         
-        final_target = list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['negative_exam_for_pe'])[0]
+        ratios = [list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['rv_lv_ratio_gte_1'])[0],
+                        list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['rv_lv_ratio_lt_1'])[0]]
+
+        locations = [list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['leftsided_pe'])[0],
+                            list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['central_pe'])[0],
+                            list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['rightsided_pe'])[0]]
+        
+        types = [list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['acute_pe'])[0],
+                            list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['chronic_pe'])[0],
+                            list(self.annotations.loc[self.annotations['StudyInstanceUID']==study]['acute_and_chronic_pe'])[0]]
+        
+        
+        final_target = [ratios, locations, types]
         
         return {'image': final_images, 'target': final_target}
         
